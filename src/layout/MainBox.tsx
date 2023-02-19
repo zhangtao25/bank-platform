@@ -1,8 +1,9 @@
 import {
     CaretDownFilled,
     DoubleRightOutlined,
+    ExclamationCircleFilled,
     GithubFilled,
-    InfoCircleFilled,
+    InfoCircleFilled, LogoutOutlined,
     PlusCircleFilled,
     QuestionCircleFilled,
     SearchOutlined,
@@ -16,12 +17,26 @@ import {
     SettingDrawer,
 } from '@ant-design/pro-components';
 import { css } from '@emotion/css';
-import { Button, Divider, Input, Popover, theme } from 'antd';
+import { Button, Divider, Dropdown, Input, Modal, Popover, theme } from 'antd';
 import React, { useState } from 'react';
 import defaultProps from './_defaultProps';
 import {Outlet, useNavigate, useRoutes} from "react-router-dom";
 import routerConfig from "../router";
+const { confirm } = Modal;
 
+const showPromiseConfirm = () => {
+    confirm({
+        title: 'Do you want to delete these items?',
+        icon: <ExclamationCircleFilled />,
+        content: 'When clicked the OK button, this dialog will be closed after 1 second',
+        onOk() {
+            return new Promise((resolve, reject) => {
+                setTimeout(Math.random() > 0.5 ? resolve : reject, 1000);
+            }).catch(() => console.log('Oops errors!'));
+        },
+        onCancel() {},
+    });
+};
 const Item: React.FC<{ children: React.ReactNode }> = (props) => {
     const { token } = theme.useToken();
     return (
@@ -145,9 +160,9 @@ export default () => {
     const routesContent = useRoutes(routerConfig)
 
     const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
-        // fixSiderbar: true,
-        // layout: 'mix',
-        // splitMenus: true,
+        fixSiderbar: true,
+        layout: 'mix',
+        splitMenus: true,
     });
 
     const [pathname, setPathname] = useState('/list/sub-page/sub-sub-page1');
@@ -199,24 +214,40 @@ export default () => {
                     avatarProps={{
                         src: 'https://gw.alipayobjects.com/zos/antfincdn/efFD%24IOql2/weixintupian_20170331104822.jpg',
                         size: 'small',
-                        title: '七妮妮',
+                        title: localStorage.getItem('display_name'),
+                        render: (props, dom) => {
+                            return (
+                                <Dropdown
+                                    menu={{
+                                        onClick(e){
+                                            console.log(123)
+                                            localStorage.clear()
+                                            window.location.href = '/login'
+                                        },
+                                        items: [
+                                            {
+                                                key: 'logout',
+                                                icon: <LogoutOutlined />,
+                                                label: '退出登录',
+                                            },
+                                        ],
+                                    }}
+                                >
+                                    {dom}
+                                </Dropdown>
+                            );
+                        },
                     }}
                     actionsRender={(props) => {
                         if (props.isMobile) return [];
                         return [
-                            props.layout !== 'side' && document.body.clientWidth > 1400 ? (
-                                <SearchInput />
-                            ) : undefined,
-                            <InfoCircleFilled key="InfoCircleFilled" />,
-                            <QuestionCircleFilled key="QuestionCircleFilled" />,
-                            <GithubFilled key="GithubFilled" />,
                         ];
                     }}
                     headerTitleRender={(logo, title, _) => {
                         const defaultDom = (
                             <a>
                                 {logo}
-                                {title}
+                                {'银行卡流水管理系统'}
                             </a>
                         );
                         if (document.body.clientWidth < 1400) {
@@ -239,8 +270,6 @@ export default () => {
                                     paddingBlockStart: 12,
                                 }}
                             >
-                                <div>© 2021 Made with love</div>
-                                <div>by Ant Design</div>
                             </div>
                         );
                     }}
@@ -262,26 +291,6 @@ export default () => {
                         token={{
                             paddingInlinePageContainerContent: num,
                         }}
-                        extra={[
-                            <Button key="3">操作</Button>,
-                            <Button key="2">操作</Button>,
-                            <Button
-                                key="1"
-                                type="primary"
-                                onClick={() => {
-                                    setNum(num > 0 ? 0 : 40);
-                                }}
-                            >
-                                主操作
-                            </Button>,
-                        ]}
-                        subTitle="简单的描述"
-                        footer={[
-                            <Button key="3">重置</Button>,
-                            <Button key="2" type="primary">
-                                提交
-                            </Button>,
-                        ]}
                     >
                         <ProCard
                             style={{

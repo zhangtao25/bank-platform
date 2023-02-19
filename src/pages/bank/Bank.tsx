@@ -38,10 +38,6 @@ const Bank = () => {
             dataIndex: 'card_id',
             search:false
         },
-        // {
-        //     title: '银行卡所有人',
-        //     dataIndex: 'card_owner'
-        // },
         {
             title: '所有人',
             dataIndex: 'name'
@@ -97,8 +93,8 @@ const Bank = () => {
         toolBarRender: true,
         search: {
             show: true,
-            span: 12,
-            collapseRender: true,
+            span: 6,
+            collapseRender: false,
             labelWidth: 80,
             filterType: 'query',
             layout: 'horizontal',
@@ -149,21 +145,6 @@ const Bank = () => {
                 config?.toolBarRender
                     ? () => [
                         <BankCreateModal></BankCreateModal>,
-                        <Button onClick={()=>{
-                            const random_card_id = String(Math.random()).split('.')[1]
-                            request({
-                                method:'POST',
-                                url:'/api/bank_card_ms/api_server/v1/bank_cards/bank_card',
-                                data:{
-                                    "card_owner":"340221199710315501",
-                                    "card_id": random_card_id,
-                                    "bank_name":"兴业银行",
-                                    "remarks":"xu"
-                                }
-                            }).then(res=>{
-                                nav(`/bank/${random_card_id}`)
-                            })
-                        }}>新增</Button>,
                         <Button key="refresh" type="primary">
                             刷新
                         </Button>,
@@ -173,33 +154,19 @@ const Bank = () => {
             footer={false}
             headerTitle={config.headerTitle}
             columns={tableColumns}
-            // dataSource={genData(config.pagination?.total || 10)}
-
-
             scroll={config.scroll}
             request={
-                ()=>{
-
-
-                    // "card_id": "222222",
-                    //     "card_image_path": "",
-                    //     "card_owner": "340221199710315501",
-                    //     "name": "许学勤小懒猪",
-                    //     "bank_name": "徽商银行",
-                    //     "remarks": "djtest",
-                    //     "create_time": 1676103084846,
-                    //     "update_time": 1676103084846,
-                    //     "delete_time": 0
-
-
-                    return                 axios('/api/bank_card_ms/api_server/v1/bank_cards?page_num=1&page_size=20',{
-                        headers:{
-                            'Authorization':`Bearer ${localStorage.getItem('token')||''}`
-                        }
+                (params)=>{
+                    return request({
+                        url:'/api/bank_card_ms/api_server/v1/bank_cards',
+                        params:{
+                            page_num:1,
+                            page_size:100,
+                            worker_name:params.name,
+                            bank_name:params.bank_name
+                        },
                     }).then(res=>{
-                        console.log(res.data)
-
-                        const data = res.data.data
+                        const data = res.data
                         return {
                             data: data.bank_cards,
                             // success 请返回 true，

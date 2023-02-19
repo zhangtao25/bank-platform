@@ -7,6 +7,7 @@ import WorkerCreateAndUpdate from "./WorkerCreateAndUpdate";
 import {useNavigate} from "react-router-dom";
 import Delete from "./Delete";
 import request from "../../helper/request";
+import WorkCreateModal from "./WorkCreateModal";
 
 const confirm = Modal
 // "card_id": "222222",
@@ -44,10 +45,10 @@ const Worker = () => {
     const actionRef = useRef<ActionType>();
     const columns: ProColumnType<DataType>[] = [
 
-        // {
-        //     title: '银行卡所有人',
-        //     dataIndex: 'card_owner'
-        // },
+        {
+            title: '身份证号',
+            dataIndex: 'worker_id'
+        },
         {
             title: '姓名',
             dataIndex: 'name'
@@ -60,7 +61,8 @@ const Worker = () => {
         {
             title: '性别',
             dataIndex: 'sex',
-            valueEnum:new Map([[1,'男'],[0,'女']])
+            valueEnum:new Map([[1,'男'],[0,'女']]),
+            search:false
         },
 
         {
@@ -109,7 +111,7 @@ const Worker = () => {
         toolBarRender: true,
         search: {
             show: true,
-            span: 12,
+            span: 6,
             collapseRender: true,
             labelWidth: 80,
             filterType: 'query',
@@ -147,7 +149,7 @@ const Worker = () => {
                 config.pagination?.show
                     ? config.pagination
                     : {
-                        pageSize: 5,
+                        pageSize: 10,
                     }
             }
             search={config.search?.show ? config.search : {}}
@@ -160,21 +162,7 @@ const Worker = () => {
             toolBarRender={
                 config?.toolBarRender
                     ? () => [
-                        <Button onClick={()=>{
-                            const random_work_id = String(Math.random()).split('.')[1]
-                            request({
-                                method:'POST',
-                                url:'/api/bank_card_ms/api_server/v1/workers/worker',
-                                data:{
-                                    "worker_id":random_work_id,
-                                    "name":"张涛",
-                                    "address":"shanghai",
-                                    "sex":1
-                                }
-                            }).then(res=>{
-                                nav(`/worker/${random_work_id}`)
-                            })
-                        }}>新增</Button>,
+                        <WorkCreateModal/>,
                         <Button key="refresh" type="primary">
                             刷新
                         </Button>,
@@ -189,28 +177,19 @@ const Worker = () => {
 
             scroll={config.scroll}
             request={
-                ()=>{
-
-
-                    // "card_id": "222222",
-                    //     "card_image_path": "",
-                    //     "card_owner": "340221199710315501",
-                    //     "name": "许学勤小懒猪",
-                    //     "bank_name": "徽商银行",
-                    //     "remarks": "djtest",
-                    //     "create_time": 1676103084846,
-                    //     "update_time": 1676103084846,
-                    //     "delete_time": 0
-
-
-                    return                 axios('/api/bank_card_ms/api_server/v1/workers?page_num=1&page_size=100',{
-                        headers:{
-                            'Authorization':`Bearer ${localStorage.getItem('token')||''}`
-                        }
+                (params, sort, filter)=>{
+                    return request({
+                        url:'/api/bank_card_ms/api_server/v1/workers',
+                        params:{
+                            page_num:1,
+                            page_size:100,
+                            worker_name:params.name,
+                            worker_id:params.worker_id
+                        },
                     }).then(res=>{
-                        console.log(res.data)
+                        // console.log(res.data)
 
-                        const data = res.data.data
+                        const data = res.data
                         return {
                             data: data.workers,
                             // success 请返回 true，

@@ -24,7 +24,7 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
     return (
         <Modal
             open={open}
-            title="新增银行卡🏦"
+            title="新增工人👷"
             okText="Create"
             cancelText="Cancel"
             onCancel={onCancel}
@@ -47,8 +47,8 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                 initialValues={{ modifier: 'public' }}
             >
                 <Form.Item
-                    name="card_id"
-                    label="银行卡号"
+                    name="work_id"
+                    label="身份证号"
                 >
                     <Input />
                 </Form.Item>
@@ -62,18 +62,18 @@ const BankCreateModal: React.FC = () => {
     const nav = useNavigate()
     const onCreate = (values: any) => {
         // console.log(values.card_id)
-        const random_card_id = values.card_id
+        const random_work_id = values.work_id
         request({
             method:'POST',
-            url:'/api/bank_card_ms/api_server/v1/bank_cards/bank_card',
+            url:'/api/bank_card_ms/api_server/v1/workers/worker',
             data:{
-                "card_owner":"340203199606121819",
-                "card_id": random_card_id,
-                "bank_name":"1",
-                "remarks":"1"
+                "worker_id":random_work_id,
+                "name":"1",
+                "address":"1",
+                "sex":1
             }
         }).then(res=>{
-            nav(`/bank/${random_card_id}`)
+            nav(`/worker/${random_work_id}`)
         })
         setOpen(false);
     };
@@ -85,7 +85,7 @@ const BankCreateModal: React.FC = () => {
                     setOpen(true);
                 }}
             >
-                新增银行卡🏦
+                新增工人👷
             </Button>
             <CollectionCreateForm
                 open={open}

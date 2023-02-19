@@ -140,7 +140,7 @@ const BankCreateAndUpdate = () => {
     const {data:data1} = useRequest(()=>{
         return request({
             method:'GET',
-            url:`/api/bank_card_ms/api_server/v1/bank_cards/bank_card/${params.card_id}?page_num=1&page_size=10`
+            url:`/api/bank_card_ms/api_server/v1/bank_cards/bank_card/${params.card_id}?page_num=1&page_size=100`
         }).then(res=>{
             return res.data
         })
@@ -184,7 +184,7 @@ const BankCreateAndUpdate = () => {
     const {data:workersOptions} = useRequest(()=>{
         return request({
             method:'GET',
-            url:`/api/bank_card_ms/api_server/v1/workers?page_num=1&page_size=10`
+            url:`/api/bank_card_ms/api_server/v1/workers?page_num=1&page_size=100`
         }).then(res=>{
             return res.data.workers.map(i=>({
                 value:i.worker_id,
@@ -210,10 +210,26 @@ const BankCreateAndUpdate = () => {
         >
             <ProForm.Group>
                 <ProFormSelect
+                    fieldProps={{showSearch:true,filterOption:(input, option) =>{
+                        console.log(input,option)
+                            try {
+                                return input,option?.label.includes(input)
+                            } catch (e) {
+                                return false
+                            }
+
+                        }
+                    }}
                     name={'card_owner'}
                     options={workersOptions}
                     width="md"
                     label="所有人"
+                />
+                <ProFormText
+                    readonly={true}
+                    name={'card_owner'}
+                    width="md"
+                    label="身份证"
                 />
             </ProForm.Group>
             <ProForm.Group>
@@ -234,7 +250,7 @@ const BankCreateAndUpdate = () => {
                     placeholder="请输入银行"
                 />
                 <ProFormText
-                    disabled={record?true:false}
+                    readonly={record?true:false}
                     width="md"
                     name="card_id"
                     label="银行卡号"

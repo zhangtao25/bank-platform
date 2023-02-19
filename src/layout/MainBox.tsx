@@ -8,6 +8,7 @@ import {
     QuestionCircleFilled,
     SearchOutlined,
 } from '@ant-design/icons';
+import platformLogo from '../assets/react.svg'
 import type { ProSettings } from '@ant-design/pro-components';
 import {
     PageContainer,
@@ -246,7 +247,7 @@ export default () => {
                     headerTitleRender={(logo, title, _) => {
                         const defaultDom = (
                             <a>
-                                {logo}
+                                <img src={platformLogo} alt=""/>
                                 {'银行卡流水管理系统'}
                             </a>
                         );

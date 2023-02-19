@@ -1,7 +1,13 @@
-const { createProxyMiddleware } = require('http-proxy-middleware');
-const history = require('connect-history-api-fallback');
-const express = require('express');
+// const { createProxyMiddleware } = require('http-proxy-middleware');
+// const history = require('connect-history-api-fallback');
+// const express = require('express');
+import history from 'express'
+import express from 'connect-history-api-fallback'
+import { createProxyMiddleware }  from 'http-proxy-middleware'
 const app = express();
+
+
+
 
 
 app.use(

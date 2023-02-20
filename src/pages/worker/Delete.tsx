@@ -17,7 +17,7 @@ const Delete = ({record,updateTable}) => {
             },
             cancelText: 'No',
             onOk() {
-                axios.delete(`/api/bank_card_ms/api_server/v1/bank_cards/bank_card/${record.card_id}`,{
+                axios.delete(`/api/bank_card_ms/api_server/v1/workers/worker/${record.worker_id}`,{
                     headers:{
                         'Authorization':`Bearer ${localStorage.getItem('token')||''}`
                     }

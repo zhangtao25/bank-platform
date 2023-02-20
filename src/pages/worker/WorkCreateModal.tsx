@@ -52,6 +52,18 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                 >
                     <Input />
                 </Form.Item>
+                 <Form.Item
+                  name="name"
+                label="姓名"
+                >
+                   <Input />
+                               </Form.Item>
+                                               <Form.Item
+                                                   name="address"
+                                                   label="地址"
+                                               >
+                                                   <Input />
+                                               </Form.Item>
             </Form>
         </Modal>
     );
@@ -68,8 +80,8 @@ const BankCreateModal: React.FC = () => {
             url:'/api/bank_card_ms/api_server/v1/workers/worker',
             data:{
                 "worker_id":random_work_id,
-                "name":"1",
-                "address":"1",
+                "name":values.name,
+                "address":values.address,
                 "sex":1
             }
         }).then(res=>{

@@ -48,7 +48,7 @@ export default () => {
                   if (res.data.code === 0){
                     localStorage.setItem('token',res.data.data.token)
                       localStorage.setItem('display_name',res.data.data.display_name)
-                    nav(`/bank`)
+                    nav(`/worker`)
                   } else {
                     message.error(JSON.stringify(res.data))
                   }

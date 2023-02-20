@@ -52,6 +52,24 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                 >
                     <Input />
                 </Form.Item>
+                <Form.Item
+                 name="card_owner"
+                  label="银行卡所属人"
+                >
+                <Input />
+                </Form.Item>
+                <Form.Item
+                 name="bank_name"
+                  label="银行名称"
+                >
+                <Input />
+                </Form.Item>
+                <Form.Item
+                 name="remarks"
+                  label="备注"
+                >
+                <Input />
+                </Form.Item>
             </Form>
         </Modal>
     );
@@ -61,16 +79,16 @@ const BankCreateModal: React.FC = () => {
     const [open, setOpen] = useState(false);
     const nav = useNavigate()
     const onCreate = (values: any) => {
-        // console.log(values.card_id)
+        console.log(values)
         const random_card_id = values.card_id
         request({
             method:'POST',
             url:'/api/bank_card_ms/api_server/v1/bank_cards/bank_card',
             data:{
-                "card_owner":"340203199606121819",
-                "card_id": random_card_id,
-                "bank_name":"1",
-                "remarks":"1"
+                "card_owner":values.card_owner,
+                "card_id": values.card_id,
+                "bank_name":values.bank_name,
+                "remarks":values.remarks
             }
         }).then(res=>{
             nav(`/bank/${random_card_id}`)

@@ -22,7 +22,10 @@ axiosInstance.interceptors.request.use((config) => {
 
 function Request<T = unknown>(configParam: AxiosRequestConfig): Promise<T> {
     return new Promise((resolve) => {
-        axiosInstance.request<T, AxiosResponse<T>>(configParam).then((res) => {
+        axiosInstance.request<T, AxiosResponse<T>>(configParam).then((res:any) => {
+            if (res.data.code === 1){
+                message.error(res.data.msg)
+            }
             resolve(res.data);
         });
     });

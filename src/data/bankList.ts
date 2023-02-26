@@ -164,6 +164,5 @@ export default {
     "TCCB":[{"name":"天津银行","logo":"https://s2.ax1x.com/2019/10/26/K00BXq.png"}],
     "WJRCB":[{"name":"吴江农商银行","logo":"https://s2.ax1x.com/2019/10/26/K00W9J.png"}],
     "CBBQS":[{"name":"城市商业银行资金清算中心","logo":"https://s2.ax1x.com/2019/10/25/Kd6Zmq.png"}],
-    "HBRCU":[{"name":"河北省农村信用社","logo":"https://s2.ax1x.com/2019/10/26/K05VBD.png"}],
     "HSBC":[{"name":"汇丰银行","logo":"https://s2.ax1x.com/2019/10/25/KdvLa6.png"}]
 }

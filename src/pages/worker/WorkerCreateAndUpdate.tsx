@@ -14,6 +14,8 @@ import request from '../../helper/request';
 import WarningLine from "./WarningLine";
 import BankCreateAndUpdate from "../bank/BankCreateAndUpdate";
 import BankCreateModal from '../bank/BankCreateModal';
+import {Divider} from "antd/lib";
+import Delete from "../bank/Delete";
 
 
 // const dataSource = []
@@ -88,13 +90,19 @@ const WorkerCreateAndUpdate = () => {
             title:'操作',
             render(_,record){
 
-                return <Button type={'link'} onClick={()=>{
-                    nav(`/bank/${record.card_id}`)
-                }}>查看</Button>
+                return <div>
+                    <Button type={'link'} onClick={()=>{
+                        nav(`/bank/${record.card_id}`)
+                    }}>查看</Button>
+                    <Divider type={'vertical'}/>
+                    <Delete record={{card_id:record.card_id}} updateTable={()=>{
+                        runData1()
+                    }}></Delete>
+                </div>
             }
         }]
     const [form] = Form.useForm<{ name: string; company: string }>();
-    const {data:data1} = useRequest(()=>{
+    const {data:data1,run:runData1} = useRequest(()=>{
         return request({
             method:'GET',
             url:`/api/bank_card_ms/api_server/v1/workers/worker/${params.worker_id}?page_num=1&page_size=100`

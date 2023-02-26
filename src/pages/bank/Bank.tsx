@@ -10,16 +10,6 @@ import request from "../../helper/request";
 import BankCreateModal from "./BankCreateModal";
 
 const confirm = Modal
-// "card_id": "222222",
-//     "card_image_path": "",
-//     "card_owner": "340221199710315501",
-//     "name": "许学勤小懒猪",
-//     "bank_name": "徽商银行",
-//     "remarks": "djtest",
-//     "create_time": 1676103084846,
-//     "update_time": 1676103084846,
-//     "delete_time": 0
-
 
 type DataType = {
     age: number;

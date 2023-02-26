@@ -12,6 +12,8 @@ import { useRequest } from 'ahooks';
 import {useNavigate, useParams} from "react-router-dom";
 import request from '../../helper/request';
 import WarningLine from "./WarningLine";
+import BankCreateAndUpdate from "../bank/BankCreateAndUpdate";
+import BankCreateModal from '../bank/BankCreateModal';
 
 
 // const dataSource = []
@@ -192,6 +194,11 @@ const WorkerCreateAndUpdate = () => {
                 />
             </ProForm.Group>
             <Statistic title="当年金额总计 (人民币)" value={data1?.current_year_total_income} precision={2} />
+
+            <div style={{display:'flex',justifyContent:'space-between',padding:'20px 0'}}>
+                <div></div>
+                <BankCreateModal worker_id={params.worker_id}/>
+            </div>
             <Table size={'small'} columns={columns} dataSource={data}/>
 
         </ProForm>

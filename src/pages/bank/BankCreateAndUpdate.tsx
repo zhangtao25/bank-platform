@@ -5,11 +5,11 @@ import {
     ProFormSelect,
     ProFormText, ProFormTextArea,
 } from '@ant-design/pro-components';
-import { Form, message } from 'antd';
-import bankList from '../../data/bankList';
+import {Button, Form, message} from 'antd';
+import bankList, { genBankList } from '../../data/bankList';
 import {useEffect, useMemo, useState} from "react";
 import { useRequest } from 'ahooks';
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import request from '../../helper/request';
 import WarningLine from "./WarningLine";
 
@@ -120,18 +120,6 @@ const waitTime = (time: number = 100) => {
         }, time);
     });
 };
-function genBankList(bl:any) {
-    return Object.keys(bl).map(r=>{
-        const item = bl[r][0]
-        return {
-            label:<div style={{display:'flex',alignItems:'center'}}>
-                <img src={item.logo} style={{width:'20px',marginRight:'6px'}} alt=""/>
-                {item.name}</div>,
-            value:r
-        }
-
-    })
-}
 const BankCreateAndUpdate = () => {
     const params = useParams()
     const record = {}
@@ -155,6 +143,7 @@ const BankCreateAndUpdate = () => {
             })
         }
     })
+    const nav = useNavigate()
     const data = useMemo(()=>{
         if (data1?.trade_list?.bank_card_trades === null){
             return []
@@ -198,111 +187,118 @@ const BankCreateAndUpdate = () => {
 
 
     return (
-        <ProForm
-            form={form}
-            formKey="base-form-use-demo"
-            onFinish={(values)=>{
-                return new Promise(resolve => {
-                    updateBanDeal(params.card_id,values)
-                    resolve(true)
-                })
-            }}
-        >
-            <ProForm.Group>
-                <ProFormSelect
-                    fieldProps={{showSearch:true,filterOption:(input, option) =>{
-                        console.log(input,option)
-                            try {
-                                return input,option?.label.includes(input)
-                            } catch (e) {
-                                return false
+        <div>
+            <Button style={{marginBottom:'20px'}} type={'primary'} onClick={()=>{
+                console.log(data1)
+                nav(`/worker/${data1.bank_card_info.card_owner}`)
+
+            }}>返回工人详情</Button>
+            <ProForm
+                form={form}
+                formKey="base-form-use-demo"
+                onFinish={(values)=>{
+                    return new Promise(resolve => {
+                        updateBanDeal(params.card_id,values)
+                        resolve(true)
+                    })
+                }}
+            >
+                <ProForm.Group>
+                    <ProFormSelect
+                        fieldProps={{showSearch:true,filterOption:(input, option) =>{
+                                console.log(input,option)
+                                try {
+                                    return input,option?.label.includes(input)
+                                } catch (e) {
+                                    return false
+                                }
+
                             }
+                        }}
+                        name={'card_owner'}
+                        options={workersOptions}
+                        width="md"
+                        label="所有人"
+                    />
+                    <ProFormText
+                        readonly={true}
+                        name={'card_owner'}
+                        width="md"
+                        label="身份证"
+                    />
+                </ProForm.Group>
+                <ProForm.Group>
+                    <ProFormSelect
+                        fieldProps={{showSearch:true,filterOption:(input, option) =>{
+                                try {
+                                    return input,option?.label.props.children[1].includes(input)
+                                } catch (e) {
+                                    return false
+                                }
 
-                        }
-                    }}
-                    name={'card_owner'}
-                    options={workersOptions}
-                    width="md"
-                    label="所有人"
-                />
-                <ProFormText
-                    readonly={true}
-                    name={'card_owner'}
-                    width="md"
-                    label="身份证"
-                />
-            </ProForm.Group>
-            <ProForm.Group>
-                <ProFormSelect
-                    fieldProps={{showSearch:true,filterOption:(input, option) =>{
-                        try {
-                            return input,option?.label.props.children[1].includes(input)
-                        } catch (e) {
-                            return false
-                        }
+                            }
+                        }}
+                        options={genBankList(bankList)}
+                        name="bank_name"
+                        width="md"
+                        label="银行"
+                        placeholder="请输入银行"
+                    />
+                    <ProFormText
+                        readonly={record?true:false}
+                        width="md"
+                        name="card_id"
+                        label="银行卡号"
+                        placeholder="请输银行卡号"
+                    />
+                </ProForm.Group>
 
-                        }
-                    }}
-                    options={genBankList(bankList)}
-                    name="bank_name"
-                    width="md"
-                    label="银行"
-                    placeholder="请输入银行"
-                />
-                <ProFormText
-                    readonly={record?true:false}
-                    width="md"
-                    name="card_id"
-                    label="银行卡号"
-                    placeholder="请输银行卡号"
-                />
-            </ProForm.Group>
+                <ProForm.Group>
+                    <ProFormTextArea
+                        width="md"
+                        name="remarks"
+                        label="备注"
+                        placeholder="请填写备注"
+                    />
+                </ProForm.Group>
+                <ProForm.Group>
+                    {
+                        data!==undefined?(                <ProForm.Item
+                            label={<WarningLine record={data}></WarningLine>}
+                            name="bank_card_trades"
+                            initialValue={data||[]}
+                            trigger="onValuesChange"
+                        >
+                            <EditableProTable<DataSourceType>
+                                rowKey="trade_id"
+                                toolBarRender={false}
+                                columns={columns}
+                                recordCreatorProps={{
+                                    newRecordType: 'dataSource',
+                                    position: 'top',
+                                    record: () => ({
+                                        is_new: true,
+                                        trade_id: String(Math.random())
+                                    }),
+                                }}
+                                editable={{
+                                    type: 'multiple',
+                                    editableKeys,
+                                    onChange: setEditableRowKeys,
+                                    actionRender: (row, config, defaultDom) => {
+                                        return [
+                                            defaultDom.save,
+                                            defaultDom.delete || defaultDom.cancel,
+                                        ];
+                                    },
+                                }}
+                            />
+                        </ProForm.Item>):null
+                    }
 
-            <ProForm.Group>
-                <ProFormTextArea
-                    width="md"
-                    name="remarks"
-                    label="备注"
-                    placeholder="请填写备注"
-                />
-            </ProForm.Group>
-            <ProForm.Group>
-                {
-                    data!==undefined?(                <ProForm.Item
-                        label={<WarningLine record={data}></WarningLine>}
-                        name="bank_card_trades"
-                        initialValue={data||[]}
-                        trigger="onValuesChange"
-                    >
-                        <EditableProTable<DataSourceType>
-                            rowKey="trade_id"
-                            toolBarRender={false}
-                            columns={columns}
-                            recordCreatorProps={{
-                                newRecordType: 'dataSource',
-                                position: 'top',
-                                record: () => ({
-                                    is_new: true,
-                                    trade_id: String(Math.random())
-                                }),
-                            }}
-                            editable={{
-                                type: 'multiple',
-                                editableKeys,
-                                onChange: setEditableRowKeys,
-                                actionRender: (row, config, defaultDom) => {
-                                    return [
-                                        defaultDom.save,
-                                        defaultDom.delete || defaultDom.cancel,
-                                    ];
-                                },
-                            }}
-                        />
-                    </ProForm.Item>):null
-                }
-
-            </ProForm.Group>
-        </ProForm>
+                </ProForm.Group>
+            </ProForm>
+        </div>
     );
 };
 

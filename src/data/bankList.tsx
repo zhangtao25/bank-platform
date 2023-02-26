@@ -166,3 +166,16 @@ export default {
     "CBBQS":[{"name":"城市商业银行资金清算中心","logo":"https://s2.ax1x.com/2019/10/25/Kd6Zmq.png"}],
     "HSBC":[{"name":"汇丰银行","logo":"https://s2.ax1x.com/2019/10/25/KdvLa6.png"}]
 }
+
+export function genBankList(bl:any) {
+    return Object.keys(bl).map(r=>{
+        const item = bl[r][0]
+        return {
+            label:<div style={{display:'flex',alignItems:'center'}}>
+        <img src={item.logo} style={{width:'20px',marginRight:'6px'}} alt=""/>
+            {item.name}</div>,
+        value:r
+    }
+
+    })
+}

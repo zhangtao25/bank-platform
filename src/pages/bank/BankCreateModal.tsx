@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Form, Input, Modal, Radio } from 'antd';
+import {Button, Form, Input, Modal, Radio, Select} from 'antd';
 import request from "../../helper/request";
 import {useNavigate} from "react-router-dom";
+import {ProFormSelect} from "@ant-design/pro-components";
+import bankList, { genBankList } from "../../data/bankList";
 
 interface Values {
     title: string;
@@ -13,12 +15,14 @@ interface CollectionCreateFormProps {
     open: boolean;
     onCreate: (values: Values) => void;
     onCancel: () => void;
+    worker_id?:string
 }
 
 const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                                                                        open,
                                                                        onCreate,
                                                                        onCancel,
+    worker_id
                                                                    }) => {
     const [form] = Form.useForm();
     return (
@@ -44,7 +48,7 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                 form={form}
                 layout="vertical"
                 name="form_in_modal"
-                initialValues={{ modifier: 'public' }}
+                initialValues={{ card_owner: worker_id ||''  }}
             >
                 <Form.Item
                     name="card_id"
@@ -62,7 +66,25 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
                  name="bank_name"
                   label="银行名称"
                 >
-                <Input />
+
+
+
+
+                    <Select
+                        showSearch={true}
+                        filterOption={(input, option) =>{
+                            try {
+                                return input,option?.label.props.children[1].includes(input)
+                            } catch (e) {
+                                return false
+                            }
+
+                        }}
+                        options={genBankList(bankList)}
+                        placeholder="请输入银行"
+                    />
+
+
                 </Form.Item>
                 <Form.Item
                  name="remarks"
@@ -75,7 +97,7 @@ const CollectionCreateForm: React.FC<CollectionCreateFormProps> = ({
     );
 };
 
-const BankCreateModal: React.FC = () => {
+const BankCreateModal: React.FC = ({worker_id}:any) => {
     const [open, setOpen] = useState(false);
     const nav = useNavigate()
     const onCreate = (values: any) => {
@@ -111,6 +133,7 @@ const BankCreateModal: React.FC = () => {
                 onCancel={() => {
                     setOpen(false);
                 }}
+                worker_id={worker_id}
             />
         </div>
     );
